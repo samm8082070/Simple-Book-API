@@ -1,0 +1,47 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.top-right-icon {
+    position: absolute; /* Or fixed, depending on your layout */
+    top: 20px; /* Adjust top spacing as needed */
+    right: 20px; /* Adjust right spacing as needed */
+    z-index: 100; /* Ensure it's above other elements */
+    /* Add any other styling you want for the icon container */
+}
+
+    .top-right-icon a { /* Style the link */
+        color: inherit; /* Inherit color from parent */
+        text-decoration: none; /* Remove underline from link */
+        /* Add any other link styles */
+    }
+
+    .top-right-icon i { /* Style the icon itself */
+        font-size: 20px; /* Adjust icon size */
+        color: #333; /* Example color */
+        /* Add any other icon styles */
+    }
+
+    /* Optional: Add hover effect */
+    .top-right-icon a:hover i {
+        color: #007bff; /* Example hover color */
+    }
