@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Azure;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using WebApplication4.Data;
 using WebApplication4.Models;
 
 namespace WebApplication4.Controllers
@@ -27,21 +19,36 @@ namespace WebApplication4.Controllers
                 _httpClientFactory = httpClientFactory;
             }
 
+            private HttpClient GetAuthenticatedHttpClient()
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                var authCookieValue = Request.Cookies[authCookieName];
+
+                if (authCookieValue == null)
+                {
+                    // Handle the case where the cookie is missing.  You have several options:
+                    // 1. Redirect (as you're doing now)
+                    // return RedirectToPage("/Account/Login", new { area = "Identity" });  // This won't work directly in a helper
+
+                    // 2. Throw an exception (more testable)
+                    throw new InvalidOperationException($"Missing authentication cookie: {authCookieName}");
+
+                    // 3. Return null (and handle the null in the calling method)
+                    // return null;
+
+                    // 4. Return an HttpClient that might work for some requests (e.g. public API)
+                    // return _httpClientFactory.CreateClient(); // Or create a specific client
+                }
+
+                httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}");
+                return httpClient;
+            }
+
             // GET: WebBooksController
             [HttpGet]
             public async Task<IActionResult> Index()
             {
-                var httpClient = _httpClientFactory.CreateClient(); 
-                var authCookieValue = Request.Cookies[authCookieName]; 
-
-                if (authCookieValue != null)
-                {
-                    httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}"); 
-                }
-                else
-                {
-                    return RedirectToPage("/Account/Login", new { area = "Identity" });
-                }
+                var httpClient = GetAuthenticatedHttpClient();
 
                 var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books");
                 response.EnsureSuccessStatusCode();
@@ -56,17 +63,8 @@ namespace WebApplication4.Controllers
             [HttpGet]
             public async Task<IActionResult> Details(int id)
             {   
-                var httpClient = _httpClientFactory.CreateClient(); // And create here
-                var authCookieValue = Request.Cookies[authCookieName]; 
+                var httpClient = GetAuthenticatedHttpClient();
 
-                if (authCookieValue != null)
-                {
-                    httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}"); 
-                }
-                else
-                {
-                    return RedirectToPage("/Account/Login", new { area = "Identity" });
-                }
                 var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books/{id}");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
@@ -92,17 +90,7 @@ namespace WebApplication4.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var httpClient = _httpClientFactory.CreateClient();
-                    var authCookieValue = Request.Cookies[authCookieName]; 
-
-                    if (authCookieValue != null)
-                    {
-                        httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}"); 
-                    }
-                    else
-                    {
-                        return RedirectToPage("/Account/Login", new { area = "Identity" });
-                    }
+                    var httpClient = GetAuthenticatedHttpClient();
 
                     var json = JsonSerializer.Serialize(book);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -124,17 +112,7 @@ namespace WebApplication4.Controllers
             [HttpGet]
             public async Task<IActionResult> Edit(int id)
             {
-                var httpClient = _httpClientFactory.CreateClient();
-                var authCookieValue = Request.Cookies[authCookieName]; 
-
-                if (authCookieValue != null)
-                {
-                    httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}"); 
-                }
-                else
-                {
-                    return RedirectToPage("/Account/Login", new { area = "Identity" });
-                }
+                var httpClient = GetAuthenticatedHttpClient();
 
                 var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books/{id}");
                 if (!response.IsSuccessStatusCode)
@@ -162,17 +140,8 @@ namespace WebApplication4.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var httpClient = _httpClientFactory.CreateClient();
-                    var authCookieValue = Request.Cookies[authCookieName]; 
+                    var httpClient = GetAuthenticatedHttpClient();
 
-                    if (authCookieValue != null)
-                    {
-                        httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}"); 
-                    }
-                    else
-                    {
-                        return RedirectToPage("/Account/Login", new { area = "Identity" });
-                    }
                     var json = JsonSerializer.Serialize(book);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -193,17 +162,7 @@ namespace WebApplication4.Controllers
 
             public async Task<IActionResult> Delete(int id)
             {
-                var httpClient = _httpClientFactory.CreateClient();
-                var authCookieValue = Request.Cookies[authCookieName]; 
-
-                if (authCookieValue != null)
-                {
-                    httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}"); 
-                }
-                else
-                {
-                    return RedirectToPage("/Account/Login", new { area = "Identity" });
-                }
+                var httpClient = GetAuthenticatedHttpClient();
 
                 var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books/{id}");
                 if (!response.IsSuccessStatusCode)
@@ -226,17 +185,7 @@ namespace WebApplication4.Controllers
             [ValidateAntiForgeryToken]
             public async Task<IActionResult> DeleteConfirmed(int id)
             {
-                var httpClient = _httpClientFactory.CreateClient();
-                var authCookieValue = Request.Cookies[authCookieName]; 
-
-                if (authCookieValue != null)
-                {
-                    httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}"); 
-                }
-                else
-                {
-                    return RedirectToPage("/Account/Login", new { area = "Identity" });
-                }
+                var httpClient = GetAuthenticatedHttpClient();
 
                 var response = await httpClient.DeleteAsync($"{_apiBaseUrl}/api/books/{id}");
 
@@ -249,159 +198,5 @@ namespace WebApplication4.Controllers
             }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //    private readonly ApplicationDbContext _context;
-
-        //    public WebBooksController(ApplicationDbContext context)
-        //    {
-        //        _context = context;
-        //    }
-
-        //    // GET: WebBooks
-        //    public async Task<IActionResult> Index()
-        //    {
-        //        return View(await _context.Books.ToListAsync());
-        //    }
-
-        //    // GET: WebBooks/Details/5
-        //    public async Task<IActionResult> Details(int? id)
-        //    {
-        //        if (id == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        var book = await _context.Books
-        //            .FirstOrDefaultAsync(m => m.Id == id);
-        //        if (book == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        return View(book);
-        //    }
-
-        //    // GET: WebBooks/Create
-        //    public IActionResult Create()
-        //    {
-        //        return View();
-        //    }
-
-        //    // POST: WebBooks/Create
-        //    // To protect from overposting attacks, enable the specific properties you want to bind to.
-        //    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //    [HttpPost]
-        //    [ValidateAntiForgeryToken]
-        //    public async Task<IActionResult> Create([Bind("Id,Title")] Book book)
-        //    {
-        //        if (ModelState.IsValid)
-        //        {
-        //            _context.Add(book);
-        //            await _context.SaveChangesAsync();
-        //            return RedirectToAction(nameof(Index));
-        //        }
-        //        return View(book);
-        //    }
-
-        //    // GET: WebBooks/Edit/5
-        //    public async Task<IActionResult> Edit(int? id)
-        //    {
-        //        if (id == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        var book = await _context.Books.FindAsync(id);
-        //        if (book == null)
-        //        {
-        //            return NotFound();
-        //        }
-        //        return View(book);
-        //    }
-
-        //    // POST: WebBooks/Edit/5
-        //    // To protect from overposting attacks, enable the specific properties you want to bind to.
-        //    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //    [HttpPost]
-        //    [ValidateAntiForgeryToken]
-        //    public async Task<IActionResult> Edit(int id, [Bind("Id,Title")] Book book)
-        //    {
-        //        if (id != book.Id)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        if (ModelState.IsValid)
-        //        {
-        //            try
-        //            {
-        //                _context.Update(book);
-        //                await _context.SaveChangesAsync();
-        //            }
-        //            catch (DbUpdateConcurrencyException)
-        //            {
-        //                if (!BookExists(book.Id))
-        //                {
-        //                    return NotFound();
-        //                }
-        //                else
-        //                {
-        //                    throw;
-        //                }
-        //            }
-        //            return RedirectToAction(nameof(Index));
-        //        }
-        //        return View(book);
-        //    }
-
-        //    // GET: WebBooks/Delete/5
-        //    public async Task<IActionResult> Delete(int? id)
-        //    {
-        //        if (id == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        var book = await _context.Books
-        //            .FirstOrDefaultAsync(m => m.Id == id);
-        //        if (book == null)
-        //        {
-        //            return NotFound();
-        //        }
-
-        //        return View(book);
-        //    }
-
-        //    // POST: WebBooks/Delete/5
-        //    [HttpPost, ActionName("Delete")]
-        //    [ValidateAntiForgeryToken]
-        //    public async Task<IActionResult> DeleteConfirmed(int id)
-        //    {
-        //        var book = await _context.Books.FindAsync(id);
-        //        if (book != null)
-        //        {
-        //            _context.Books.Remove(book);
-        //        }
-
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    private bool BookExists(int id)
-        //    {
-        //        return _context.Books.Any(e => e.Id == id);
-        //    }
     }
 }

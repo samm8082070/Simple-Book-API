@@ -38,6 +38,9 @@ namespace WebApplication4
             builder.Services.AddAuthorization();
 
             builder.Services.AddScoped<IBookRepository, BookRepository>();
+            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+            builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
+
             builder.Services.AddHttpClient();
 
             var app = builder.Build();
