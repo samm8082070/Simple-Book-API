@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication4.Models.Book>
+﻿@model IEnumerable<WebApplication4.Dtos.BookDto>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +7,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New</a> @* This might need to be updated if your Create action also uses DTOs *@
 </p>
 <table class="table">
     <thead>
@@ -16,38 +16,48 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Author)  @* New *@
+                @Html.DisplayNameFor(model => model.Author)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.NumberOfPages)  @* New *@
+                @Html.DisplayNameFor(model => model.NumberOfPages)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PublishDate)  @* New *@
+                @Html.DisplayNameFor(model => model.PublishDate)
             </th>
+            <th>Genres</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)  @* New *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumberOfPages)  @* New *@
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PublishDate)  @* New *@
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumberOfPages)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PublishDate)
+                </td>
+                <td>
+                    <ul>
+                        @foreach (var genre in item.Genres)  @* Access Genres from the DTO *@
+                        {
+                            <li>@genre.GenreName</li>         @* Display GenreName from GenreDto *@
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | @* These might need to be updated if your Edit/Details/Delete actions also use DTOs *@
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
