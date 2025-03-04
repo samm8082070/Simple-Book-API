@@ -4,10 +4,10 @@ namespace WebApplication4.Repositories
 {
     public interface IGenreRepository
     {
-        Task<IEnumerable<Genre>> GetAllGenresAsync();
-        Task<Genre> GetGenreByIdAsync(int id);
-        Task AddGenreAsync(Genre genre);
-        Task UpdateGenreAsync(Genre genre);
-        Task DeleteGenreAsync(int id);
+        IEnumerable<Genre> GetAllGenres();
+        Genre GetGenreById(int id);
+        void AddGenre(Genre genre);
+        void UpdateGenre(Genre genre);
+        void DeleteGenre(int id);
     }
 }

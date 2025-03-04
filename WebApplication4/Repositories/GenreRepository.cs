@@ -13,35 +13,35 @@ namespace WebApplication4.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Genre>> GetAllGenresAsync()
+        public    IEnumerable<Genre> GetAllGenres  ()
         {
-            return await _context.Genres.ToListAsync();
+            return  _context.Genres.ToList  ();
         }
 
-        public async Task<Genre> GetGenreByIdAsync(int id)
+        public    Genre GetGenreById  (int id)
         {
-            return await _context.Genres.FindAsync(id);
+            return  _context.Genres.Find  (id);
         }
 
-        public async Task AddGenreAsync(Genre genre)
+        public    void AddGenre  (Genre genre)
         {
             _context.Genres.Add(genre);
-            await _context.SaveChangesAsync();
+             _context.SaveChanges  ();
         }
 
-        public async Task UpdateGenreAsync(Genre genre)
+        public    void UpdateGenre  (Genre genre)
         {
             _context.Entry(genre).State = EntityState.Modified; // Important for updates
-            await _context.SaveChangesAsync();
+             _context.SaveChanges  ();
         }
 
-        public async Task DeleteGenreAsync(int id)
+        public    void DeleteGenre  (int id)
         {
-            var genre = await _context.Genres.FindAsync(id);
+            var genre =  _context.Genres.Find  (id);
             if (genre != null)
             {
                 _context.Genres.Remove(genre);
-                await _context.SaveChangesAsync();
+                 _context.SaveChanges  ();
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using WebApplication4.Data;
 using WebApplication4.Models;
 
@@ -22,7 +23,10 @@ namespace WebApplication4.Repositories
         {
             try
             {
-                return _context.Books.Find(id); // Use Find for primary key lookup
+                return _context.Books
+                    .Include(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
+                    .SingleOrDefault(b => b.Id == id); // Use Find for primary key lookup
             }
             catch (SqlException ex)
             {
@@ -35,7 +39,10 @@ namespace WebApplication4.Repositories
         {
             try
             {
-                return _context.Books.ToList(); // Use ToList to get all books
+                return _context.Books
+                    .Include(b => b.BookGenres)
+                    .ThenInclude(bg => bg.Genre)
+                    .ToList();
             }
             catch (SqlException ex)
             {
@@ -44,12 +51,13 @@ namespace WebApplication4.Repositories
             }
         }
 
-        public void AddBook(Book book)
+        public Book AddBook(Book book)
         {
             try
             {
                 _context.Books.Add(book);
                 _context.SaveChanges(); // Save changes to the database
+                return book;
             }
             catch (SqlException ex)
             {
@@ -58,12 +66,13 @@ namespace WebApplication4.Repositories
             }
         }
 
-        public void UpdateBook(Book book)
+        public Book UpdateBook(Book book)
         {
             try
             {
                 _context.Books.Update(book);
                 _context.SaveChanges();
+                return book;
             }
             catch (SqlException ex)
             {
@@ -89,46 +98,5 @@ namespace WebApplication4.Repositories
                 }
             }
         }
-        //private readonly List<Book> _books = new List<Book> // Your data store (replace with DB)
-        //{
-        //    new Book { Id = 1, Title = "The Lord of the Rings" },
-        //    new Book { Id = 2, Title = "The Hitchhiker's Guide to the Galaxy" }
-        //};
-
-
-        //public Book GetBook(int id)
-        //{
-        //    return _books.FirstOrDefault(b => b.Id == id); // Use FirstOrDefault to handle not found
-        //}
-
-        //public IEnumerable<Book> GetBooks()
-        //{
-        //    return _books;
-        //}
-
-        //public void AddBook(Book book)
-        //{
-        //    _books.Add(book);
-        //}
-
-        //public void UpdateBook(Book book)
-        //{
-        //    var existingBook = _books.Find(b => b.Id == book.Id);
-        //    if (existingBook != null)
-        //    {
-        //        // Update the properties of the existingBook with the values from the book parameter
-        //        existingBook.Title = book.Title;
-        //        // ... update other properties
-        //    }
-        //}
-
-        //public void DeleteBook(int id)
-        //{
-        //    var bookToRemove = _books.Find(b => b.Id == id);
-        //    if (bookToRemove != null)
-        //    {
-        //        _books.Remove(bookToRemove);
-        //    }
-        //}
     }
 }
