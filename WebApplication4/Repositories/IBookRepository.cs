@@ -6,8 +6,8 @@ namespace WebApplication4.Repositories
     {
         Book GetBook(int id);
         IEnumerable<Book> GetBooks();
-        void AddBook(Book book); // Example for adding
-        void UpdateBook(Book book); // Example for updating
+        Book AddBook(Book book);
+        Book UpdateBook(Book book); // Example for updating
         void DeleteBook(int id);
     }
 }

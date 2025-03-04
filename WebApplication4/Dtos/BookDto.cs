@@ -1,18 +1,12 @@
-﻿using Humanizer.Localisation;
-
-namespace WebApplication4.Models
+﻿namespace WebApplication4.Dtos
 {
-    public class Book
+    public class BookDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        
         public string Author { get; set; }
-
         public int NumberOfPages { get; set; }
-
         public DateOnly PublishDate { get; set; }
-        
-        public ICollection<BookGenre> BookGenres { get; set; } // Navigation property
+        public List<GenreDto> Genres { get; set; } = new List<GenreDto>(); // Nested Genre DTO
     }
 }
