@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Text.Json;
+using WebApplication4.Dtos;
 using WebApplication4.Models;
 
 namespace WebApplication4.Controllers
@@ -26,18 +27,8 @@ namespace WebApplication4.Controllers
 
                 if (authCookieValue == null)
                 {
-                    // Handle the case where the cookie is missing.  You have several options:
-                    // 1. Redirect (as you're doing now)
-                    // return RedirectToPage("/Account/Login", new { area = "Identity" });  // This won't work directly in a helper
-
-                    // 2. Throw an exception (more testable)
                     throw new InvalidOperationException($"Missing authentication cookie: {authCookieName}");
 
-                    // 3. Return null (and handle the null in the calling method)
-                    // return null;
-
-                    // 4. Return an HttpClient that might work for some requests (e.g. public API)
-                    // return _httpClientFactory.CreateClient(); // Or create a specific client
                 }
 
                 httpClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}");
@@ -53,7 +44,7 @@ namespace WebApplication4.Controllers
                 var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                var books = JsonSerializer.Deserialize<List<Book>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var books = JsonSerializer.Deserialize<List<BookDto>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 return View(books);
 
@@ -68,7 +59,7 @@ namespace WebApplication4.Controllers
                 var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books/{id}");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                var book = JsonSerializer.Deserialize<Book>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var book = JsonSerializer.Deserialize<BookDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 return View(book);
 
@@ -78,15 +69,20 @@ namespace WebApplication4.Controllers
 
             // GET: WebBooks/Create
             [HttpGet]
-            public IActionResult Create()
+            public async Task<IActionResult> Create()
                 {
-                    return View(); // Display the create form
+                    var HttpClient = GetAuthenticatedHttpClient();
+                    var response = await HttpClient.GetAsync($"{_apiBaseUrl}/api/books/create");
+                    response.EnsureSuccessStatusCode();
+                    var json = await response.Content.ReadAsStringAsync();
+                    var book = JsonSerializer.Deserialize<BookCreateDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return View(book); // Display the create form
                 }
 
             // POST: WebBooks/Create
             [HttpPost]
             [ValidateAntiForgeryToken] // Prevents cross-site request forgery
-            public async Task<IActionResult> Create(Book book)
+            public async Task<IActionResult> Create(BookCreateDto book)
             {
                 if (ModelState.IsValid)
                 {
@@ -97,10 +93,6 @@ namespace WebApplication4.Controllers
 
                     var response = await httpClient.PostAsync($"{_apiBaseUrl}/api/books", content);
                     response.EnsureSuccessStatusCode();
-
-                    // Optionally, handle the response (e.g., redirect to details)
-                    var createdBookJson = await response.Content.ReadAsStringAsync();
-                    var createdBook = JsonSerializer.Deserialize<Book>(createdBookJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     return RedirectToAction(nameof(Index)); // Redirect to the list of books
                 }
@@ -114,13 +106,10 @@ namespace WebApplication4.Controllers
             {
                 var httpClient = GetAuthenticatedHttpClient();
 
-                var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books/{id}");
-                if (!response.IsSuccessStatusCode)
-                {
-                    return NotFound(); // Or handle the error appropriately
-                }
+                var response = await httpClient.GetAsync($"{_apiBaseUrl}/api/books/edit/{id}");
+                response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                var book = JsonSerializer.Deserialize<Book>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var book = JsonSerializer.Deserialize<BookEditDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (book == null)
                 {
@@ -131,7 +120,7 @@ namespace WebApplication4.Controllers
 
             [HttpPost]
             [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Edit(int id, Book book)
+            public async Task<IActionResult> Edit(int id, BookEditDto book)
             {
                 if (id != book.Id)
                 {
