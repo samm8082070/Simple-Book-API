@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using WebApplication4.Data;
+using WebApplication4.Dtos;
 using WebApplication4.Models;
 
 namespace WebApplication4.Repositories
@@ -49,6 +50,41 @@ namespace WebApplication4.Repositories
                 _logger.LogError(ex, "Error retrieving book IEnumerable");
                 throw;
             }
+        }
+
+        public IEnumerable<Book> GetBooks(string? searchstring = null, int? numberofpages = null, DateOnly? publishdate = null, string? author = null)
+        {
+            
+            IQueryable<Book> query = _context.Books;
+
+            query = query
+            .Include(b => b.BookGenres)
+            .ThenInclude(bg => bg.Genre);
+
+            if (!string.IsNullOrEmpty(searchstring))
+            {
+                //query = query.Where(b => b.Title.Contains(searchstring));
+                query = query.Where(b => EF.Functions.Like(b.Title, $"%{searchstring}%")); // Parameterized
+            }
+
+            if (numberofpages.HasValue)
+            {
+                query = query.Where(b => b.NumberOfPages == numberofpages.Value);
+            }
+
+            if (publishdate.HasValue)
+            {
+                query = query.Where(b => b.PublishDate == publishdate.Value);
+            }
+
+            if (!string.IsNullOrEmpty(author))
+            {
+                query = query.Where(b => EF.Functions.Like(b.Author, $"%{author}%"));
+            }
+
+            var books = query.ToList();
+
+            return books;
         }
 
         public Book AddBook(Book book)
