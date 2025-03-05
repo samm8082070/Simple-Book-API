@@ -6,6 +6,7 @@ namespace WebApplication4.Repositories
     {
         Book GetBook(int id);
         IEnumerable<Book> GetBooks();
+        IEnumerable<Book> GetBooks(string? searchstring = null, int? numberofpages = null, DateOnly? publishdate = null, string? author = null);
         Book AddBook(Book book);
         Book UpdateBook(Book book); // Example for updating
         void DeleteBook(int id);

@@ -186,6 +186,18 @@ namespace WebApplication4.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            [HttpPost]
+            public async Task<IActionResult> Search(string? searchString = null , int? numberOfPages = null ,DateOnly? publishDate = null, string? author=null) {
+
+                var HttpClient = GetAuthenticatedHttpClient();
+                var response = await HttpClient.GetAsync($"{_apiBaseUrl}/api/books?searchstring={searchString}&numberofpages={numberOfPages}&publishdate={publishDate:yyyy-MM-dd}&author={author}");
+                response.EnsureSuccessStatusCode();
+                var json = await response.Content.ReadAsStringAsync();
+                var books = JsonSerializer.Deserialize<List<BookDto>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }); 
+
+                return View(books); 
+            }
+
 
     }
 }

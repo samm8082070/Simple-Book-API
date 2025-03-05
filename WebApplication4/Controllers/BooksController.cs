@@ -83,24 +83,6 @@ namespace WebApplication4.Controllers
             return bookEditDto;
         }
 
-        // GET: api/<BooksController>
-        [HttpGet]
-        public IActionResult Get()
-        {
-            var books = _bookRepository.GetBooks();
-            if (books == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                List<BookDto> bookDtos = MappingsHelper(books);
-
-                return Ok(bookDtos); // Return the DTOs
-            }
-
-        }
-
         [HttpGet("edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
@@ -213,6 +195,14 @@ namespace WebApplication4.Controllers
         {
             _bookRepository.DeleteBook(id);
             return NoContent(); // Returns 204 No Content for successful deletions
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<BookDto>> GetBooks(string? searchstring = null, int? numberofpages = null, DateOnly? publishdate = null, string? author = null)
+        {
+            var books =  _bookRepository.GetBooks(searchstring, numberofpages, publishdate, author);
+            var mappedbookdtos = MappingsHelper(books);
+            return Ok(mappedbookdtos); // Return data as JSON
         }
     }
 }
