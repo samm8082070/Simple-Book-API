@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using WebApplication4.Dtos;
@@ -198,6 +200,48 @@ namespace WebApplication4.Controllers
                 return View(books); 
             }
 
+            [HttpGet]
+            public async Task<IActionResult> Import() {
+            return View();
+            }
+            [HttpPost]
+            public async Task<IActionResult> Import(IFormFile formFile) {
 
+                var HttpClient = GetAuthenticatedHttpClient();
+                using var multipart = new MultipartFormDataContent();
+                multipart.Add(new StreamContent(formFile.OpenReadStream()), "importFile", formFile.FileName); 
+                var response = await HttpClient.PostAsync($"{_apiBaseUrl}/api/books/import", multipart);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = "Your file was uploaded successfully!";
+                    return RedirectToAction(nameof(Index)); 
+                }
+                else {
+                    var errorContent = await response.Content.ReadAsStringAsync(); // Get the error response
+                    TempData["failureMessage"] = $"Failed to upload: {response.StatusCode} - {errorContent}"; // Include error details
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+
+
+            [HttpGet]
+            public async Task<IActionResult> Export()
+            {
+                var _httpClient = GetAuthenticatedHttpClient();
+                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/api/books/export");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var csvStream = await response.Content.ReadAsStreamAsync();
+                    return File(csvStream, "text/csv", "books.csv");
+                }
+                else {
+                    var errorContent = await response.Content.ReadAsStringAsync(); 
+                    TempData["failureMessage"] = $"Failed to download: {response.StatusCode} - {errorContent}"; 
+                    return RedirectToAction(nameof(Index));
+                }
+            }
     }
 }

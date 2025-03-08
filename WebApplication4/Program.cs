@@ -40,6 +40,7 @@ namespace WebApplication4
             builder.Services.AddScoped<IBookRepository, BookRepository>();
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
             builder.Services.AddScoped<IBookGenreRepository, BookGenreRepository>();
+            builder.Services.AddScoped<IBookImportExportRepository, BookImportExportRepository>();
 
             builder.Services.AddHttpClient();
 

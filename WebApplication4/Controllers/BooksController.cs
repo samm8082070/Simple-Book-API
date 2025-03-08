@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using System.Net;
+using System.Text;
 using WebApplication4.Dtos;
 using WebApplication4.Models;
 using WebApplication4.Repositories;
@@ -16,14 +18,17 @@ namespace WebApplication4.Controllers
     public class BooksController : ControllerBase
     {
         private readonly IBookRepository _bookRepository;
-        private readonly IGenreRepository _genreRepository; 
-        private readonly IBookGenreRepository _bookGenreRepository ; 
+        private readonly IGenreRepository _genreRepository;
+        private readonly IBookGenreRepository _bookGenreRepository;
+        private readonly IBookImportExportRepository _importExportRepo;
+        
 
-        public BooksController(IBookRepository bookRepository, IGenreRepository genreRepository, IBookGenreRepository bookGenreRepository)
+        public BooksController(IBookRepository bookRepository, IGenreRepository genreRepository, IBookGenreRepository bookGenreRepository , IBookImportExportRepository importExportRepo)
         {
             _bookRepository = bookRepository;
             _genreRepository = genreRepository;
             _bookGenreRepository = bookGenreRepository;
+            _importExportRepo = importExportRepo;
         }
         private BookDto MappingHelper(Book book)
         {
@@ -40,7 +45,7 @@ namespace WebApplication4.Controllers
                     GenreName = bg.Genre.GenreName
                 }).ToList()
             };
-            return (bookDto); 
+            return (bookDto);
         }
         private static List<BookDto> MappingsHelper(IEnumerable<Book> books)
         {
@@ -97,7 +102,7 @@ namespace WebApplication4.Controllers
 
             return Ok(bookEditDto); // Return the DTO
         }
-        
+
         [HttpGet("create")]
         public async Task<IActionResult> Create()
         {
@@ -112,7 +117,7 @@ namespace WebApplication4.Controllers
                             })
                             .ToList()
             };
-            
+
 
             return Ok(bookCreateDto); // Return the DTO
         }
@@ -181,10 +186,10 @@ namespace WebApplication4.Controllers
             foreach (var item in selectedGenreIds)
             {
                 if (!_bookGenreRepository.IsGenreAssignedToBook(bookReturned.Id, item))
-                { 
+                {
                     _bookGenreRepository.AddGenreToBook(bookId: bookReturned.Id, genreId: item);
                 }
-                
+
             }
             return NoContent(); // Returns 204 No Content for successful updates
         }
@@ -200,9 +205,38 @@ namespace WebApplication4.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<BookDto>> GetBooks(string? searchstring = null, int? numberofpages = null, DateOnly? publishdate = null, string? author = null)
         {
-            var books =  _bookRepository.GetBooks(searchstring, numberofpages, publishdate, author);
+            var books = _bookRepository.GetBooks(searchstring, numberofpages, publishdate, author);
             var mappedbookdtos = MappingsHelper(books);
             return Ok(mappedbookdtos); // Return data as JSON
+        }
+
+        [HttpPost("import")]
+        public async Task<IActionResult> Import(IFormFile importFile) {
+            if (importFile == null)
+            {
+                return BadRequest("No file uploaded."); // Handle missing file
+            }
+            try
+            {
+                using var stream = importFile.OpenReadStream();
+                await _importExportRepo.ImportBooksFromCsv(stream); // Use the new repo
+                return Ok(new { message = "File imported successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+
+            
+        }
+
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportBooks()
+        {
+            var csvData = await _importExportRepo.ExportBooksToCsvAsync();
+
+            return File(Encoding.UTF8.GetBytes(csvData), "text/csv", "books.csv"); // Return CSV file
         }
     }
 }

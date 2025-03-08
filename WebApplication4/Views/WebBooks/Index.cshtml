@@ -6,8 +6,29 @@
 
 <h1>Index</h1>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+else if (TempData["failureMessage"] != null) 
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["failureMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
 <p>
-    <a asp-action="Create">Create New</a> @* This might need to be updated if your Create action also uses DTOs *@
+    <a asp-action="Create">Create New</a> 
+    <a asp-action="Import">Import</a> 
+    <a asp-action="Export">Export</a>
 </p>
 <form asp-controller="WebBooks" asp-action="Search" method="post">
     <input type="text" name="searchstring" placeholder="Search..." />
