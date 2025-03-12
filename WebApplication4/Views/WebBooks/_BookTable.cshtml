@@ -1,56 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model IEnumerable<WebApplication4.Dtos.BookDto>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NumberOfPages)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PublishDate)
-            </th>
-            <th>Genres</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Author)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NumberOfPages)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PublishDate)
-                </td>
-                <td>
-                    <ul>
-                        @foreach (var genre in item.Genres)  @* Access Genres from the DTO *@
-                        {
-                            <li>@genre.GenreName</li>         @* Display GenreName from GenreDto *@
-                        }
-                    </ul>
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> | @* These might need to be updated if your Edit/Details/Delete actions also use DTOs *@
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+﻿@model IEnumerable<WebApplication4.Dtos.BookDto>
+<div class="book-grid">
+    @foreach (var book in Model)
+    {
+        <div class="book-item">
+            <div class="book-image">
+                <img src="~/images/placeholder.jpg" alt="@book.Title" />
+            </div>
+            <div class="book-details">
+                <div class="genre-tags">
+                    @foreach (var genre in book.Genres)
+                    {
+                        <span class="genre-tag">@genre.GenreName</span>
+                    }
+                </div>
+                <span class="author-tag">@book.Author</span>
+                <span class="pages-tag">@book.NumberOfPages</span>
+                <div class="book-actions">
+                    <a asp-action="Edit" asp-route-id="@book.Id" class="action-link">
+                        <img src="~/images/icons/pen-solid.svg" alt="Edit" />
+                    </a>
+                    <a asp-action="Details" asp-route-id="@book.Id" class="action-link">
+                        <img src="~/images/icons/circle-info-solid.svg" alt="Details" />
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@book.Id" class="action-link">
+                        <img src="~/images/icons/trash-solid.svg" alt="Delete" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

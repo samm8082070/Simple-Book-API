@@ -18,7 +18,14 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: #222529;
+    margin-bottom: 60px;
+    color: white;
+}
+
+.highlight {
+    background-color: #007bff; /* Example accent color (blue) */
+    color: white;
 }
 
 .top-right-icon {
@@ -29,19 +36,159 @@ body {
     /* Add any other styling you want for the icon container */
 }
 
-    .top-right-icon a { /* Style the link */
-        color: inherit; /* Inherit color from parent */
-        text-decoration: none; /* Remove underline from link */
-        /* Add any other link styles */
-    }
+.top-right-icon a { /* Style the link */
+    color: inherit; /* Inherit color from parent */
+    text-decoration: none; /* Remove underline from link */
+    /* Add any other link styles */
+}
 
-    .top-right-icon i { /* Style the icon itself */
-        font-size: 20px; /* Adjust icon size */
-        color: #333; /* Example color */
-        /* Add any other icon styles */
-    }
+.top-right-icon i { /* Style the icon itself */
+    font-size: 20px; /* Adjust icon size */
+    color: #333; /* Example color */
+    /* Add any other icon styles */
+}
 
-    /* Optional: Add hover effect */
-    .top-right-icon a:hover i {
-        color: #007bff; /* Example hover color */
-    }
+/* Optional: Add hover effect */
+.top-right-icon a:hover i {
+    color: #007bff; /* Example hover color */
+}
+
+.search-button {
+    background-color: #5865F2; /* Blue color */
+    color: white;
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px; /* Adjust font size */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    height: 40px;
+    vertical-align: top;
+    line-height: 40px;
+    padding: 0 15px;
+}
+
+.search-button:hover {
+    background-color: #185ABC; /* Slightly darker blue on hover */
+}
+
+.search-input {
+    padding: 10px; /* Adjust padding as needed */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Slightly rounded corners */
+    font-size: 16px; /* Adjust font size */
+    width: 70%;
+    box-sizing: border-box; /* Include padding and border in width */
+    outline: none; /* Remove default focus outline */
+    background-color: #222529;
+    color: white; /* Make the text white for contrast */
+    margin: 0 auto;
+    height: 40px;
+    border: 1px solid #3E3E40;
+}
+
+.search-input:focus {
+    border-color: #007bff; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+}
+
+td {
+    color: white;
+}
+
+th {
+    color: white;
+}
+
+.action-link {
+    color: white; /* Keep the text color white */
+    text-decoration: none; /* Remove underline */
+    margin: 0 5px; /* Keep the spacing between links */
+    
+}
+
+.action-link img {
+    fill: white;
+    width: 16px;
+    height: 16px;
+}
+.navbar {
+    background-color: #222529 !important;
+}
+.nav-link {
+    color: white !important;
+}
+.navbar-brand {
+    color: #5865F2 !important;
+}
+footer.border-top {
+    border-top: 1px solid #3E3E40; /* Change the border color */
+}
+
+.login-register-button {
+    background-color: #5865F2; /* Blue color */
+    color: white;
+    padding: 5px 5px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px; /* Adjust font size */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    height: 20px;
+    vertical-align: top;
+    line-height: 20px;
+    
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columns */
+    gap: 20px; /* Adjust gap between items */
+}
+
+.book-item {
+    width: 230px;
+    height: 340px;
+    border: 1px solid #ccc; /* Placeholder border */
+    padding: 10px;
+}
+
+.book-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+.book-details span {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin: 5px;
+    font-size: 0.8em;
+}
+
+.genre-tag {
+    background-color: #800080; /* Purple */
+    color: white;
+    display: flex; /* Arrange tags horizontally */
+    flex-wrap: wrap; /* Allow tags to wrap to the next line */
+    gap: 5px; /* Add some space between tags */
+}
+
+.author-tag {
+    background-color: #008080; /* Teal */
+    color: white;
+}
+
+.pages-tag {
+    background-color: #000080; /* Navy */
+    color: white;
+}
+
+.book-actions {
+    margin-top: 10px; /* Add some space above the buttons */
+}
+
+.search-form {
+    margin-bottom: 10px; /* Add 10px bottom margin */
+}
