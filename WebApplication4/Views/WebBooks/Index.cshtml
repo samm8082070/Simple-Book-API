@@ -26,9 +26,9 @@ else if (TempData["failureMessage"] != null)
 }
 
 <p>
-    <a asp-action="Create">Create New</a> 
-    <a asp-action="Import">Import</a> 
-    <a asp-action="Export">Export</a>
+    <a asp-action="Create" class="search-button" style="text-decoration: none;">Create New</a> 
+    <a asp-action="Import" class="search-button" style="text-decoration: none;">Import</a>
+    <a asp-action="Export" class="search-button" style="text-decoration: none;">Export</a>
 </p>
 <form asp-controller="WebBooks" asp-action="Search" method="post" class="search-form">
     <input type="text" class="search-input" name="searchstring" placeholder="Search" />

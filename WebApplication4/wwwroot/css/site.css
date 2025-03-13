@@ -61,15 +61,24 @@ body {
     border-radius: 8px; /* Rounded corners */
     font-size: 16px; /* Adjust font size */
     cursor: pointer; /* Change cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth hover effect */
+    transition: background-color 0.3s ease, box-shadow 0.2s ease-in-out; /* Smooth hover effect, also for shadow */
     height: 40px;
     vertical-align: top;
-    line-height: 40px;
+    line-height: 20px;
     padding: 0 15px;
+    font-weight: 500; /* Add a bit of weight to the text */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    letter-spacing: 0.5px; /* Add a little spacing between letters */
+    text-transform: uppercase; /* Consider making text uppercase */
 }
 
 .search-button:hover {
     background-color: #185ABC; /* Slightly darker blue on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+}
+.search-button:active {
+    transform: translateY(1px); /* Add a slight push-down effect */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Reduce shadow when pressed */
 }
 
 .search-input {
@@ -148,9 +157,9 @@ footer.border-top {
 
 .book-item {
     width: 230px;
-    height: 340px;
-    border: 1px solid #ccc; /* Placeholder border */
-    padding: 10px;
+    border: 2px solid #3E3E40; /* Placeholder border */
+    padding: 25px;
+    border-radius: 5px;
 }
 
 .book-image img {
@@ -167,12 +176,23 @@ footer.border-top {
     font-size: 0.8em;
 }
 
+.genre-tag,
+.author-tag,
+.pages-tag {
+    display: inline-block; /* Display side-by-side */
+    padding: 5px 10px; /* Consistent padding */
+    border-radius: 15px; /* Pill-shaped tags */
+    font-size: 0.85em; /* Slightly smaller font */
+    margin-right: 5px; /* Spacing between tags */
+    margin-bottom: 5px; /* Spacing below tags */
+    font-weight: 500; /* Slightly bolder text */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+    transition: transform 0.1s ease-in-out; /* Smooth hover effect */
+}
+
 .genre-tag {
     background-color: #800080; /* Purple */
     color: white;
-    display: flex; /* Arrange tags horizontally */
-    flex-wrap: wrap; /* Allow tags to wrap to the next line */
-    gap: 5px; /* Add some space between tags */
 }
 
 .author-tag {
@@ -185,10 +205,34 @@ footer.border-top {
     color: white;
 }
 
+.genre-tag:hover,
+.author-tag:hover,
+.pages-tag:hover {
+    transform: translateY(-2px); /* Lift slightly on hover */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+}
+
 .book-actions {
     margin-top: 10px; /* Add some space above the buttons */
 }
 
 .search-form {
     margin-bottom: 10px; /* Add 10px bottom margin */
+}
+.form-control {
+    background-color: #222529 !important;
+    border: 1px solid #3E3E40 !important;
+    color: #FFFFFF !important;
+    
+}
+.form-control:focus {
+    border-color: #007bff; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+}
+
+.book-title {
+    font-size: 1.2em; /* Increase font size */
+    font-weight: 600; /* Make it bolder */
+    margin-bottom: 10px; /* Add spacing below the title */
+    /* Add other styles as needed */
 }
