@@ -1,12 +1,13 @@
 ﻿
 <h1>Import</h1>
 
-<form asp-controller="WebBooks" asp-action="Import" method="post" enctype="multipart/form-data">
+<form asp-controller="WebBooks" asp-action="Import" method="post" enctype="multipart/form-data" class="search-form">
     <div class="form-group">
         <label for="formFile">file input</label>
-        <input type="file" name="formFile" id="formFile"> 
-        <button type="submit">Upload</button>
+        <input type="file" name="formFile" id="formFile">
+        <button type="submit" class="search-button">Upload</button>
     </div>
 </form>
-
-<a asp-controller="WebBooks" asp-action="Index">Back To Index</a>
+<div>
+	<a asp-controller="WebBooks" asp-action="Index" class="search-button" style="text-decoration: none;">Back To Index</a>
+</div>

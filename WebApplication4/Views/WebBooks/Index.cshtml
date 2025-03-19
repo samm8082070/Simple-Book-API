@@ -31,7 +31,12 @@ else if (TempData["failureMessage"] != null)
     <a asp-action="Export" class="search-button" style="text-decoration: none;">Export</a>
 </p>
 <form asp-controller="WebBooks" asp-action="Search" method="post" class="search-form">
-    <input type="text" class="search-input" name="searchstring" placeholder="Search" />
-    <button class="search-button" type="submit">Search</button>
+    <div class="search-input-container">
+        <input type="text" class="search-input" name="searchstring" placeholder="Search" />
+        <span class="search-icon">
+            <img src="~/images/icons/magnifying-glass-solid.svg" alt="Search Icon" />
+        </span>
+    </div>
+    
 </form>
 <partial name="_BookTable" model="Model" />

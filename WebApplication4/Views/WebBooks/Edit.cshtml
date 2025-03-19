@@ -6,7 +6,13 @@
 
 <h1>Edit</h1>
 
-<h4>Book</h4>
+<div>
+    <a asp-action="Index" class="action-link">
+        <img src="~/images/icons/arrow-left-solid.svg" alt="Back" />
+    </a>
+</div>
+
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -43,25 +49,24 @@
                 }
                 @foreach (var genre in Model.AvailableGenres) // Iterate over ALL available genres
                 {
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" name="SelectedGenreIds[@i]" value="@genre.GenreId"
-                        @(Model.Genres.Any(g => g.GenreId == genre.GenreId) ? "checked" : "")> @* Check if selected *@
-                        <label class="form-check-label">@genre.GenreName</label>
-                        <input type="hidden" name="SelectedGenreIds[@i]" value="00" />
-                    </div>
+                       <div class="genre-item">
+                            <div class="form-check">
+                            <input type="checkbox" class="form-check-input" name="SelectedGenreIds[@i]" value="@genre.GenreId" id="genre-@genre.GenreId"
+                                @(Model.Genres.Any(g => g.GenreId == genre.GenreId) ? "checked" : "")> @* Check if selected *@
+                                <label class="form-check-label" for="genre-@genre.GenreId">@genre.GenreName</label>
+                                <input type="hidden" name="SelectedGenreIds[@i]" value="00" />
+                            </div>
+                        </div>
                      i++; 
                 }
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="search-button" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

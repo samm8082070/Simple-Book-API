@@ -73,7 +73,7 @@ body {
 }
 
 .search-button:hover {
-    background-color: #185ABC; /* Slightly darker blue on hover */
+    background-color: #003366; /* Slightly darker blue on hover */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
 }
 .search-button:active {
@@ -81,12 +81,33 @@ body {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Reduce shadow when pressed */
 }
 
+.search-input-container {
+    position: relative; /* Needed for absolute positioning of the icon */
+    display: inline-block; /* Ensure the container takes up the necessary space */
+    width: 300px; /* Adjust as needed */
+}
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 15px; /* Adjust as needed */
+    transform: translateY(-50%); /* Vertically center the icon */
+    pointer-events: none; /* Prevent the icon from interfering with clicks */
+    opacity: 0.7; /* Make the icon slightly transparent */
+}
+
+.search-icon img {
+    width: 20px; /* Adjust icon size as needed */
+    height: auto;
+    /*fill: #5865F2;*/ /* Use your blue color */
+}
+
 .search-input {
-    padding: 10px; /* Adjust padding as needed */
+    padding-right: 30px; /* Make space for the icon */
+    padding-left: 30px; /* Add padding on the left */
     border: 1px solid #ccc; /* Light gray border */
     border-radius: 5px; /* Slightly rounded corners */
     font-size: 16px; /* Adjust font size */
-    width: 70%;
+    width: 100%;
     box-sizing: border-box; /* Include padding and border in width */
     outline: none; /* Remove default focus outline */
     background-color: #222529;
@@ -97,7 +118,7 @@ body {
 }
 
 .search-input:focus {
-    border-color: #007bff; /* Blue border on focus */
+    border-color: #4D58CA; /* Blue border on focus */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
 }
 
@@ -117,9 +138,14 @@ th {
 }
 
 .action-link img {
-    fill: white;
+    opacity: 0.6;
     width: 16px;
     height: 16px;
+    transition: opacity 0.2s ease-in-out;
+}
+.action-link:hover img {
+    opacity: 0.8;
+    transform: scale(1.1);
 }
 .navbar {
     background-color: #222529 !important;
@@ -235,4 +261,44 @@ footer.border-top {
     font-weight: 600; /* Make it bolder */
     margin-bottom: 10px; /* Add spacing below the title */
     /* Add other styles as needed */
+}
+
+.genre-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.genre-item label {
+    position: relative;
+    padding-left: 25px; /* Space for the custom checkbox */
+    cursor: pointer; /* Add pointer cursor */
+}
+
+.genre-item label::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #3E3E40; /* Border color */
+    border-radius: 3px;
+}
+
+.genre-item input[type="checkbox"]:checked + label::before {
+    background-color: #5865F2; /* Checked color */
+    border-color: #5865F2;
+}
+
+.genre-item input[type="checkbox"]:checked + label::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 2px;
 }
