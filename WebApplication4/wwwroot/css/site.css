@@ -18,7 +18,14 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: #222529;
+    margin-bottom: 60px;
+    color: white;
+}
+
+.highlight {
+    background-color: #007bff; /* Example accent color (blue) */
+    color: white;
 }
 
 .top-right-icon {
@@ -29,19 +36,269 @@ body {
     /* Add any other styling you want for the icon container */
 }
 
-    .top-right-icon a { /* Style the link */
-        color: inherit; /* Inherit color from parent */
-        text-decoration: none; /* Remove underline from link */
-        /* Add any other link styles */
-    }
+.top-right-icon a { /* Style the link */
+    color: inherit; /* Inherit color from parent */
+    text-decoration: none; /* Remove underline from link */
+    /* Add any other link styles */
+}
 
-    .top-right-icon i { /* Style the icon itself */
-        font-size: 20px; /* Adjust icon size */
-        color: #333; /* Example color */
-        /* Add any other icon styles */
-    }
+.top-right-icon i { /* Style the icon itself */
+    font-size: 20px; /* Adjust icon size */
+    color: #333; /* Example color */
+    /* Add any other icon styles */
+}
 
-    /* Optional: Add hover effect */
-    .top-right-icon a:hover i {
-        color: #007bff; /* Example hover color */
-    }
+/* Optional: Add hover effect */
+.top-right-icon a:hover i {
+    color: #007bff; /* Example hover color */
+}
+
+.search-button {
+    background-color: #5865F2; /* Blue color */
+    color: white;
+    padding: 10px 20px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px; /* Adjust font size */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease, box-shadow 0.2s ease-in-out; /* Smooth hover effect, also for shadow */
+    height: 40px;
+    vertical-align: top;
+    line-height: 20px;
+    padding: 0 15px;
+    font-weight: 500; /* Add a bit of weight to the text */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    letter-spacing: 0.5px; /* Add a little spacing between letters */
+    text-transform: uppercase; /* Consider making text uppercase */
+}
+
+.search-button:hover {
+    background-color: #003366; /* Slightly darker blue on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+}
+.search-button:active {
+    transform: translateY(1px); /* Add a slight push-down effect */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Reduce shadow when pressed */
+}
+
+.search-input-container {
+    position: relative; /* Needed for absolute positioning of the icon */
+    display: inline-block; /* Ensure the container takes up the necessary space */
+    width: 300px; /* Adjust as needed */
+}
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 15px; /* Adjust as needed */
+    transform: translateY(-50%); /* Vertically center the icon */
+    pointer-events: none; /* Prevent the icon from interfering with clicks */
+    opacity: 0.7; /* Make the icon slightly transparent */
+}
+
+.search-icon img {
+    width: 20px; /* Adjust icon size as needed */
+    height: auto;
+    /*fill: #5865F2;*/ /* Use your blue color */
+}
+
+.search-input {
+    padding-right: 30px; /* Make space for the icon */
+    padding-left: 30px; /* Add padding on the left */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 5px; /* Slightly rounded corners */
+    font-size: 16px; /* Adjust font size */
+    width: 100%;
+    box-sizing: border-box; /* Include padding and border in width */
+    outline: none; /* Remove default focus outline */
+    background-color: #222529;
+    color: white; /* Make the text white for contrast */
+    margin: 0 auto;
+    height: 40px;
+    border: 1px solid #3E3E40;
+}
+
+.search-input:focus {
+    border-color: #4D58CA; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+}
+
+td {
+    color: white;
+}
+
+th {
+    color: white;
+}
+
+.action-link {
+    color: white; /* Keep the text color white */
+    text-decoration: none; /* Remove underline */
+    margin: 0 5px; /* Keep the spacing between links */
+    
+}
+
+.action-link img {
+    opacity: 0.6;
+    width: 16px;
+    height: 16px;
+    transition: opacity 0.2s ease-in-out;
+}
+.action-link:hover img {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+.navbar {
+    background-color: #222529 !important;
+}
+.nav-link {
+    color: white !important;
+}
+.navbar-brand {
+    color: #5865F2 !important;
+}
+footer.border-top {
+    border-top: 1px solid #3E3E40; /* Change the border color */
+}
+
+.login-register-button {
+    background-color: #5865F2; /* Blue color */
+    color: white;
+    padding: 5px 5px; /* Adjust padding as needed */
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    font-size: 16px; /* Adjust font size */
+    cursor: pointer; /* Change cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    height: 20px;
+    vertical-align: top;
+    line-height: 20px;
+    
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columns */
+    gap: 20px; /* Adjust gap between items */
+}
+
+.book-item {
+    width: 230px;
+    border: 2px solid #3E3E40; /* Placeholder border */
+    padding: 25px;
+    border-radius: 5px;
+}
+
+.book-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+.book-details span {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin: 5px;
+    font-size: 0.8em;
+}
+
+.genre-tag,
+.author-tag,
+.pages-tag {
+    display: inline-block; /* Display side-by-side */
+    padding: 5px 10px; /* Consistent padding */
+    border-radius: 15px; /* Pill-shaped tags */
+    font-size: 0.85em; /* Slightly smaller font */
+    margin-right: 5px; /* Spacing between tags */
+    margin-bottom: 5px; /* Spacing below tags */
+    font-weight: 500; /* Slightly bolder text */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+    transition: transform 0.1s ease-in-out; /* Smooth hover effect */
+}
+
+.genre-tag {
+    background-color: #800080; /* Purple */
+    color: white;
+}
+
+.author-tag {
+    background-color: #008080; /* Teal */
+    color: white;
+}
+
+.pages-tag {
+    background-color: #000080; /* Navy */
+    color: white;
+}
+
+.genre-tag:hover,
+.author-tag:hover,
+.pages-tag:hover {
+    transform: translateY(-2px); /* Lift slightly on hover */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2); /* Increased shadow on hover */
+}
+
+.book-actions {
+    margin-top: 10px; /* Add some space above the buttons */
+}
+
+.search-form {
+    margin-bottom: 10px; /* Add 10px bottom margin */
+}
+.form-control {
+    background-color: #222529 !important;
+    border: 1px solid #3E3E40 !important;
+    color: #FFFFFF !important;
+    
+}
+.form-control:focus {
+    border-color: #007bff; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Blue shadow on focus */
+}
+
+.book-title {
+    font-size: 1.2em; /* Increase font size */
+    font-weight: 600; /* Make it bolder */
+    margin-bottom: 10px; /* Add spacing below the title */
+    /* Add other styles as needed */
+}
+
+.genre-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.genre-item label {
+    position: relative;
+    padding-left: 25px; /* Space for the custom checkbox */
+    cursor: pointer; /* Add pointer cursor */
+}
+
+.genre-item label::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #3E3E40; /* Border color */
+    border-radius: 3px;
+}
+
+.genre-item input[type="checkbox"]:checked + label::before {
+    background-color: #5865F2; /* Checked color */
+    border-color: #5865F2;
+}
+
+.genre-item input[type="checkbox"]:checked + label::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 2px;
+}

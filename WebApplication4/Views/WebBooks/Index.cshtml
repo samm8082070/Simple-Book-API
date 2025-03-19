@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>List Of Books</h1>
 
 @if (TempData["SuccessMessage"] != null)
 {
@@ -26,12 +26,17 @@ else if (TempData["failureMessage"] != null)
 }
 
 <p>
-    <a asp-action="Create">Create New</a> 
-    <a asp-action="Import">Import</a> 
-    <a asp-action="Export">Export</a>
+    <a asp-action="Create" class="search-button" style="text-decoration: none;">Create New</a> 
+    <a asp-action="Import" class="search-button" style="text-decoration: none;">Import</a>
+    <a asp-action="Export" class="search-button" style="text-decoration: none;">Export</a>
 </p>
-<form asp-controller="WebBooks" asp-action="Search" method="post">
-    <input type="text" name="searchstring" placeholder="Search..." />
-    <button type="submit">Search</button>
+<form asp-controller="WebBooks" asp-action="Search" method="post" class="search-form">
+    <div class="search-input-container">
+        <input type="text" class="search-input" name="searchstring" placeholder="Search" />
+        <span class="search-icon">
+            <img src="~/images/icons/magnifying-glass-solid.svg" alt="Search Icon" />
+        </span>
+    </div>
+    
 </form>
 <partial name="_BookTable" model="Model" />

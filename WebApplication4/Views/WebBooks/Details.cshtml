@@ -5,9 +5,12 @@
 }
 
 <h1>Details</h1>
+    <a asp-action="Index" class="action-link">
+        <img src="~/images/icons/arrow-left-solid.svg" alt="Back" />
+    </a>
 
 <div>
-    <h4>Book</h4>
+    
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -55,6 +58,7 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="action-link">
+        <img src="~/images/icons/pen-solid.svg" alt="Edit" />
+    </a> 
 </div>
