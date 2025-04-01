@@ -10,5 +10,6 @@ namespace WebApplication4.Repositories
         Book AddBook(Book book);
         Book UpdateBook(Book book); // Example for updating
         void DeleteBook(int id);
+        public Task AddBookCoverAsync(int bookId, string coverImagePath);
     }
 }

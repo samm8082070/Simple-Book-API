@@ -1,10 +1,16 @@
 ﻿@model IEnumerable<WebApplication4.Dtos.BookDto>
+
 <div class="book-grid">
     @foreach (var book in Model)
     {
         <div class="book-item">
             <div class="book-image">
-                <img src="~/images/placeholder.jpg" alt="@book.Title" />
+                @{
+                    var defaultImagePath = Url.Content("~/images/placeholder.jpg");
+                    var bookCoverImagePath = Url.Content("~/images/covers/" + book.Id + ".jpg");
+                }
+
+                <img src="@bookCoverImagePath" alt="@book.Title" onerror="handleImageError(this, '@defaultImagePath')" />
             </div>
             <div class="book-details">
                 <div class="book-title">@book.Title</div>
@@ -26,8 +32,20 @@
                     <a asp-action="Delete" asp-route-id="@book.Id" class="action-link">
                         <img src="~/images/icons/trash-solid.svg" alt="Delete" />
                     </a>
+                    <a asp-action="UploadImage" asp-route-id="@book.Id" class="action-link">
+                        <img src="~/images/icons/image-solid.svg" alt="UploadImage" />
+                    </a>
                 </div>
             </div>
         </div>
     }
 </div>
+
+<script>
+    function handleImageError(img, defaultSrc) {
+        if (!img.errorHandled) { // Check if error has already been handled
+            img.src = defaultSrc;
+            img.errorHandled = true; // Set the flag
+        }
+    }
+</script>

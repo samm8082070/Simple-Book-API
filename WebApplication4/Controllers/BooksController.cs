@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
+using System;
 using System.Net;
 using System.Text;
 using WebApplication4.Dtos;
@@ -29,6 +31,21 @@ namespace WebApplication4.Controllers
             _genreRepository = genreRepository;
             _bookGenreRepository = bookGenreRepository;
             _importExportRepo = importExportRepo;
+        }
+
+        // Helper method to get the full error message
+        private string GetFullErrorMessage(Exception ex)
+        {
+            string errorMessage = ex.Message;
+            Exception innerException = ex.InnerException;
+
+            while (innerException != null)
+            {
+                errorMessage += " --> " + innerException.Message;
+                innerException = innerException.InnerException;
+            }
+
+            return errorMessage;
         }
         private BookDto MappingHelper(Book book)
         {
@@ -230,6 +247,47 @@ namespace WebApplication4.Controllers
             
         }
 
+        [HttpPost("uploadimage/{bookId}")]
+        public async Task<IActionResult> UploadImage(IFormFile coverImage , int bookId) {
+
+            if (coverImage == null || coverImage.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            try
+            {
+                // 1. Generate a unique filename
+                var fileName = bookId + Path.GetExtension(coverImage.FileName);
+
+                // 2. Construct the directory path
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/covers");
+
+                // 3. Create the directory if it doesn't exist
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                // 4. Construct the full file path
+                var filePath = Path.Combine(directoryPath, fileName);
+
+                // 5. Save the file to the file system
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await coverImage.CopyToAsync(stream);
+                }
+
+                await _bookRepository.AddBookCoverAsync(bookId, "/images/covers/" + fileName);
+
+                return Ok(new { message = "Book cover uploaded successfully!" });
+            }
+            catch (Exception ex)
+            {
+                
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         [HttpGet("export")]
         public async Task<IActionResult> ExportBooks()
