@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Text;
@@ -201,7 +202,7 @@ namespace WebApplication4.Controllers
             }
 
             [HttpGet]
-            public async Task<IActionResult> Import() {
+            public IActionResult Import() {
             return View();
             }
             [HttpPost]
@@ -224,8 +225,6 @@ namespace WebApplication4.Controllers
                 }
             }
 
-
-
             [HttpGet]
             public async Task<IActionResult> Export()
             {
@@ -240,6 +239,34 @@ namespace WebApplication4.Controllers
                 else {
                     var errorContent = await response.Content.ReadAsStringAsync(); 
                     TempData["failureMessage"] = $"Failed to download: {response.StatusCode} - {errorContent}"; 
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+
+            [HttpGet("UploadImage/{id}")] // Route to accept an ID
+            public IActionResult UploadImage(int id)
+            {
+                return View(id); // Pass the id as model
+            }
+
+            [HttpPost("UploadImage/{bookId}")]
+            public async Task<IActionResult> UploadImage(IFormFile coverImage, int bookId)
+            {
+                var HttpClient = GetAuthenticatedHttpClient();
+                using var multipart = new MultipartFormDataContent();
+                multipart.Add(new StreamContent(coverImage.OpenReadStream()), "coverImage", coverImage.FileName); // Corrected form field name
+
+                var response = await HttpClient.PostAsync($"{_apiBaseUrl}/api/books/uploadimage/{bookId}", multipart);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    TempData["SuccessMessage"] = "Book cover uploaded successfully!";
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    TempData["failureMessage"] = $"Failed to upload cover: {response.StatusCode} - {errorContent}";
                     return RedirectToAction(nameof(Index));
                 }
             }

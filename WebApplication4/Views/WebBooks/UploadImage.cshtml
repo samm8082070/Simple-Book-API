@@ -1,0 +1,10 @@
+﻿@model int // Pass BookId as model
+
+<form asp-controller="WebBooks" asp-action="UploadImage" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="bookId" value="@Model" />
+    <input type="file" name="coverImage" id="coverImage">
+    <button type="submit" class="search-button">Upload</button>
+</form>
+<div>
+    <a asp-controller="WebBooks" asp-action="Index" class="search-button" style="text-decoration: none;">Back To Index</a>
+</div>

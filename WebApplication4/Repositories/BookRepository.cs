@@ -134,5 +134,19 @@ namespace WebApplication4.Repositories
                 }
             }
         }
+
+        public async Task AddBookCoverAsync(int bookId, string relativePath)
+        {
+            var bookCover = await _context.BookCovers.FirstOrDefaultAsync(bc => bc.BookId == bookId);
+
+            if (bookCover == null)
+            {
+                bookCover = new BookCovers { BookId = bookId };
+                _context.BookCovers.Add(bookCover);
+            }
+
+            bookCover.CoverImagePath = relativePath;
+            await _context.SaveChangesAsync();
+        }
     }
 }
