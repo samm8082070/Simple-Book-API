@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "The Bookshelf";
+    var bookId = ViewBag.BookId;
+}
+<div id="pdf-container" data-book-id="@bookId">
+</div>
+
+<script src="~/pdfjs/build/pdf.mjs" type="module"></script>
+
+
+<script type="module">
+
+    async function yieldToMainThread() {
+    return new Promise(resolve => {
+        setTimeout(resolve, 0);
+        });
+    }
+    // If absolute URL from the remote server is provided, configure the CORS
+    // header on that server.
+    var container = document.getElementById('pdf-container');
+    var pdfId = container.dataset.bookId;
+    var url = '/api/PdfApi/GetPdf/' + pdfId;
+
+    // Loaded via <script> tag, create shortcut to access PDF.js exports.
+    var { pdfjsLib } = globalThis;
+
+    // The workerSrc property shall be specified.
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/build/pdf.worker.mjs';
+
+    var pdfDoc = null,
+        pageNum = 1,
+        pageRendering = false,
+        pageNumPending = null,
+        scale = 0.8,
+        canvas = document.getElementById('the-canvas'),
+        ctx = canvas.getContext('2d');
+
+    /**
+     * Get page info from document, resize canvas accordingly, and render page.
+     * param num Page number.
+     */
+    async function renderPage(num) {
+            
+
+        await pdfDoc.getPage(num).then(async function(page) {
+            var viewport = page.getViewport({ scale: scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            var renderContext = {
+                canvasContext: ctx,
+                viewport: viewport,
+            };
+            var renderTask = page.render(renderContext);
+
+            await renderTask.promise.then(async function() {
+                pageRendering = false;
+                if (pageNumPending !== null) {
+                    await renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+                await yieldToMainThread(); // Yield after rendering
+            });
+            await yieldToMainThread(); // Yield after getPage and viewport setup.
+        });
+
+        document.getElementById('page_num').textContent = num;
+    }
+
+    /**
+     * If another page rendering in progress, waits until the rendering is
+     * finised. Otherwise, executes rendering immediately.
+     */
+    function queueRenderPage(num) {
+      if (pageRendering) {
+        pageNumPending = num;
+      } else {
+        renderPage(num);
+      }
+    }
+
+    /**
+     * Displays previous page.
+     */
+    function onPrevPage() {
+      if (pageNum <= 1) {
+        return;
+      }
+      pageNum--;
+      queueRenderPage(pageNum);
+    }
+    document.getElementById('prev').addEventListener('click', onPrevPage);
+
+    /**
+     * Displays next page.
+     */
+    function onNextPage() {
+      if (pageNum >= pdfDoc.numPages) {
+        return;
+      }
+      pageNum++;
+      queueRenderPage(pageNum);
+    }
+    document.getElementById('next').addEventListener('click', onNextPage);
+
+    /**
+     * Asynchronously downloads PDF.
+     */
+    pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
+      pdfDoc = pdfDoc_;
+      document.getElementById('page_count').textContent = pdfDoc.numPages;
+
+      // Initial/first page rendering
+      renderPage(pageNum);
+    });
+</script>
+
+<div>
+    <button id="prev" class="search-button">Previous</button>
+    <button id="next" class="search-button">Next</button>
+    &nbsp; &nbsp;
+    <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+</div>
+
+<canvas id="the-canvas"></canvas>
