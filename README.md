@@ -1,14 +1,15 @@
-# WebApplication4
-# Simple Book API
+## The Bookshelf
 
-This is a simple web API built using ASP.NET Core and SQL Server to store book titles. It demonstrates basic CRUD operations and authentication/authorization using ASP.NET Core Identity.
+* Includes a custom pdf viewer using pdfjs
+* Import/export using csv files
+* Genre management
+* Crud op for full details of books
+* Work in progress
 
-## Technologies Used
 
-* ASP.NET Core
-* SQL Server
-* Entity Framework Core
-* ASP.NET Core Identity
+## Screenshots
+![image](https://github.com/user-attachments/assets/052a41ab-76e9-43f9-97dd-cb94a1f0397c)
+
 
 ## Installation
 
@@ -16,11 +17,3 @@ This is a simple web API built using ASP.NET Core and SQL Server to store book t
 2. Open the solution in Visual Studio.
 3. Configure the database connection in the `appsettings.json` file.
 4. Run the application.
-
-## Usage
-
-The API exposes endpoints for creating, reading, updating, and deleting book titles. It also includes authentication and authorization to protect the API.
-
-## Purpose
-
-This project was created to demonstrate my understanding of building web APIs with ASP.NET Core and SQL Server. I learned how to implement basic CRUD operations, authentication, and authorization.
