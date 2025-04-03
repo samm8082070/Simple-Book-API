@@ -6,7 +6,27 @@
 </div>
 
 <script src="~/pdfjs/build/pdf.mjs" type="module"></script>
+<head>
+    <style>
+        #page_num {
+            cursor: pointer;
+            text-decoration: underline;
+            color: #5865F2;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
 
+        #page_num:hover {
+                background-color: #003366;
+        }
+
+        #the-canvas {
+            margin-top: 20px; /* Add space between buttons and canvas */
+            max-width: 90%; /* ensure that the canvas does not become too wide. */
+            height: auto; /* Preserve aspect ratio */
+        }
+    </style>
+</head>
 
 <script type="module">
 
@@ -113,13 +133,51 @@
       // Initial/first page rendering
       renderPage(pageNum);
     });
+
+    const pageNumSpan = document.getElementById('page_num');
+
+    pageNumSpan.addEventListener('click', () => {
+        // Create a text box
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.value = pageNum; // Current page number
+        input.style.width = '50px'; // Adjust width as needed
+
+        // Replace the span with the input
+        pageNumSpan.replaceWith(input);
+        input.focus();
+
+        // Handle input changes
+        input.addEventListener('change', () => {
+            const newPageNum = parseInt(input.value);
+            if (newPageNum >= 1 && newPageNum <= pdfDoc.numPages) {
+                pageNum = newPageNum;
+                queueRenderPage(pageNum);
+            }
+            // Replace the input back with the span
+            input.replaceWith(pageNumSpan);
+            pageNumSpan.textContent = pageNum;
+        });
+
+        // Handle losing focus.
+        input.addEventListener('blur', () => {
+            input.replaceWith(pageNumSpan);
+            pageNumSpan.textContent = pageNum;
+        });
+    });
 </script>
 
-<div>
-    <button id="prev" class="search-button">Previous</button>
-    <button id="next" class="search-button">Next</button>
-    &nbsp; &nbsp;
-    <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-</div>
 
-<canvas id="the-canvas"></canvas>
+<div class="pdf-viewer-container">
+    <div>
+        <span>
+            <a asp-controller="WebBooks" asp-action="Index" class="search-button">Back To Index</a>
+        </span>
+        <button id="prev" class="search-button">Previous</button>
+        <button id="next" class="search-button">Next</button>
+        &nbsp; &nbsp;
+        <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+    </div>
+
+    <canvas id="the-canvas"></canvas>
+</div>
