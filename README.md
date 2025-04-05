@@ -9,6 +9,7 @@
 
 ## Screenshots
 ![image](https://github.com/user-attachments/assets/052a41ab-76e9-43f9-97dd-cb94a1f0397c)
+![image](https://github.com/user-attachments/assets/80aade43-9008-45de-b786-0923c0218da5)
 
 
 ## Installation
