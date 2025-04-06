@@ -5,7 +5,7 @@
 <div id="pdf-container" data-book-id="@bookId">
 </div>
 
-<script src="~/pdfjs/build/pdf.mjs" type="module"></script>
+
 <head>
     <style>
         #page_num {
@@ -25,8 +25,50 @@
             max-width: 90%; /* ensure that the canvas does not become too wide. */
             height: auto; /* Preserve aspect ratio */
         }
+
+        #fullScreenButton img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #fullScreenButton span {
+            max-width: 24px;
+            max-height: 24px;
+            display: inline-block;
+        }
+        #zoomOutButton img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #zoomOutButton span {
+            max-width: 24px;
+            max-height: 24px;
+            display: inline-block;
+        }
+        #zoomInButton img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #zoomInButton span {
+            max-width: 24px;
+            max-height: 24px;
+            display: inline-block;
+        }
+
+        #canvas-container {
+            width: 100%; /* Ensure canvas container fills available width */
+            display: flex; /* use flexbox to center the canvas */
+            justify-content: center; /* center the canvas */
+        }
     </style>
 </head>
+
+<script src="~/pdfjs/build/pdf.mjs" type="module"></script>
 
 <script type="module">
 
@@ -47,22 +89,28 @@
     // The workerSrc property shall be specified.
     pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdfjs/build/pdf.worker.mjs';
 
+    const maxScale = 2.0;
+    const minScale = 0.5;
+    const zoomIncrement = 0.1;
+
     var pdfDoc = null,
         pageNum = 1,
         pageRendering = false,
         pageNumPending = null,
-        scale = 0.8,
+        originalscale = 0.8,
+        currentScale = 0.8,
         canvas = document.getElementById('the-canvas'),
-        ctx = canvas.getContext('2d');
+        ctx = canvas.getContext('2d'),
+        isFullScreen = false;
 
     /**
      * Get page info from document, resize canvas accordingly, and render page.
      * param num Page number.
      */
-    async function renderPage(num) {
-            
+    async function renderPage(num,scale=0.8) {
 
         await pdfDoc.getPage(num).then(async function(page) {
+            currentScale = scale;
             var viewport = page.getViewport({ scale: scale });
             canvas.height = viewport.height;
             canvas.width = viewport.width;
@@ -79,9 +127,9 @@
                     await renderPage(pageNumPending);
                     pageNumPending = null;
                 }
-                await yieldToMainThread(); // Yield after rendering
+                await yieldToMainThread();
             });
-            await yieldToMainThread(); // Yield after getPage and viewport setup.
+            await yieldToMainThread();
         });
 
         document.getElementById('page_num').textContent = num;
@@ -91,11 +139,11 @@
      * If another page rendering in progress, waits until the rendering is
      * finised. Otherwise, executes rendering immediately.
      */
-    function queueRenderPage(num) {
+    function queueRenderPage(num,scale) {
       if (pageRendering) {
         pageNumPending = num;
       } else {
-        renderPage(num);
+        renderPage(num ,scale);
       }
     }
 
@@ -107,7 +155,11 @@
         return;
       }
       pageNum--;
-      queueRenderPage(pageNum);
+      if(isFullScreen){
+          queueRenderPage(pageNum,1.5);
+      }else{
+        queueRenderPage(pageNum);
+      }
     }
     document.getElementById('prev').addEventListener('click', onPrevPage);
 
@@ -119,10 +171,37 @@
         return;
       }
       pageNum++;
-      queueRenderPage(pageNum);
+      if(isFullScreen){
+          queueRenderPage(pageNum,1.5);
+      }else{
+        queueRenderPage(pageNum);
+      }
+      
     }
     document.getElementById('next').addEventListener('click', onNextPage);
+    
 
+    function zoomOut() {
+      if (currentScale > minScale) {
+        currentScale -= zoomIncrement;
+        renderPage(pageNum, currentScale);
+      } else {
+        console.log("Minimum zoom level reached.");
+        
+      }
+    }
+    document.getElementById('zoomOutButton').addEventListener('click', zoomOut);
+
+    function zoomIn() {
+      if (currentScale < maxScale) {
+        currentScale += zoomIncrement;
+        renderPage(pageNum, currentScale);
+      } else {
+        console.log("Maximum zoom level reached.");
+        
+      }
+    }
+    document.getElementById('zoomInButton').addEventListener('click', zoomIn);
     /**
      * Asynchronously downloads PDF.
      */
@@ -165,6 +244,90 @@
             pageNumSpan.textContent = pageNum;
         });
     });
+
+    const canvasContainer = document.getElementById('canvas-container');
+    const fullScreenButton = document.getElementById('fullScreenButton');
+
+    fullScreenButton.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            canvasContainer.requestFullscreen();
+            isFullScreen = true;
+
+            // Create fullscreen controls
+            const fullscreenControls = document.createElement('div');
+            fullscreenControls.id = 'fullscreen-pdf-controls';
+            fullscreenControls.style.position = 'fixed';
+            fullscreenControls.style.top = '0';
+            fullscreenControls.style.left = '0';
+            fullscreenControls.style.width = '100%';
+            fullscreenControls.style.zIndex = '9999';
+            fullscreenControls.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            fullscreenControls.style.padding = '10px';
+            fullscreenControls.style.display = 'flex';
+            fullscreenControls.style.justifyContent = 'center';
+            fullscreenControls.style.gap = '20px';
+
+            const prevButtonFS = document.createElement('button');
+            prevButtonFS.textContent = 'Previous';
+            prevButtonFS.addEventListener('click', onPrevPage); // Reuse your existing function
+
+            const nextButtonFS = document.createElement('button');
+            nextButtonFS.textContent = 'Next';
+            nextButtonFS.addEventListener('click', onNextPage); // Reuse your existing function
+
+            const exitButtonFS = document.createElement('button');
+            exitButtonFS.textContent = 'Exit Fullscreen';
+            exitButtonFS.addEventListener('click', () => {
+                document.exitFullscreen();
+            });
+
+            fullscreenControls.appendChild(prevButtonFS);
+            fullscreenControls.appendChild(nextButtonFS);
+            fullscreenControls.appendChild(exitButtonFS);
+
+            canvasContainer.appendChild(fullscreenControls);
+
+            // Optionally hide original controls
+            const originalControls = document.querySelector('.pdf-viewer-container > div');
+            if (originalControls) {
+                originalControls.style.display = 'none';
+            }
+
+            renderPage(pageNum, 1.5);
+        } else {
+            document.exitFullscreen();
+            isFullScreen = false;
+
+            // Remove fullscreen controls
+            const fullscreenControls = document.getElementById('fullscreen-pdf-controls');
+            if (fullscreenControls) {
+                fullscreenControls.remove();
+            }
+
+            // Optionally show original controls
+            const originalControls = document.querySelector('.pdf-viewer-container > div');
+            if (originalControls) {
+                originalControls.style.display = '';
+            }
+
+            renderPage(pageNum, originalscale);
+        }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            isFullScreen = false;
+            const fullscreenControls = document.getElementById('fullscreen-pdf-controls');
+            if (fullscreenControls) {
+                fullscreenControls.remove();
+            }
+            const originalControls = document.querySelector('.pdf-viewer-container > div');
+            if (originalControls) {
+                originalControls.style.display = '';
+            }
+            renderPage(pageNum, originalscale);
+        }
+    });
 </script>
 
 
@@ -173,11 +336,22 @@
         <span>
             <a asp-controller="WebBooks" asp-action="Index" class="search-button">Back To Index</a>
         </span>
+        <button id="fullScreenButton" class="search-button">
+            <span><img src="~/images/icons/expand-solid.svg" alt="Toggle Full Screen" /></span>
+        </button>
+        <button id="zoomOutButton" class="search-button">
+            <span><img src="~/images/icons/magnifying-glass-minus-solid.svg" alt="Zoom Out" /></span>
+        </button>
+        <button id="zoomInButton" class="search-button">
+            <span><img src="~/images/icons/magnifying-glass-plus-solid.svg" alt="Zoom In" /></span>
+        </button>
         <button id="prev" class="search-button">Previous</button>
         <button id="next" class="search-button">Next</button>
         &nbsp; &nbsp;
         <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
     </div>
 
-    <canvas id="the-canvas"></canvas>
+    <div id="canvas-container">
+        <canvas id="the-canvas"></canvas>
+    </div>
 </div>
