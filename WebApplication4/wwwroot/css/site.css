@@ -56,20 +56,24 @@ body {
 .search-button {
     background-color: #5865F2; /* Blue color */
     color: white;
-    padding: 10px 20px; /* Adjust padding as needed */
+    padding: 0 15px;
     border: none;
     border-radius: 8px; /* Rounded corners */
     font-size: 16px; /* Adjust font size */
     cursor: pointer; /* Change cursor on hover */
     transition: background-color 0.3s ease, box-shadow 0.2s ease-in-out; /* Smooth hover effect, also for shadow */
     height: 40px;
-    vertical-align: top;
-    line-height: 20px;
+    vertical-align: middle;
+    line-height: 40px;
     padding: 0 15px;
     font-weight: 500; /* Add a bit of weight to the text */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     letter-spacing: 0.5px; /* Add a little spacing between letters */
     text-transform: uppercase; /* Consider making text uppercase */
+    /* Add these styles to override defaults */
+    display: inline-block; /* Make it behave like a button */
+    text-decoration: none; /* Remove underline */
+    text-align: center; /* Center text */
 }
 
 .search-button:hover {
@@ -301,4 +305,10 @@ footer.border-top {
     height: 8px;
     background-color: white;
     border-radius: 2px;
+}
+.pdf-viewer-container {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center horizontally */
+    justify-content: flex-start; /* Align to the top */
 }

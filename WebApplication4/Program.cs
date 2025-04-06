@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using WebApplication4.Data;
 using WebApplication4.Models;
 using WebApplication4.Repositories;
@@ -23,8 +21,9 @@ namespace WebApplication4
 
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => { 
-                options.SignIn.RequireConfirmedAccount = true; 
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
@@ -58,8 +57,8 @@ namespace WebApplication4
             app.UseStaticFiles();
 
             app.UseRouting();
-
-
+            
+            
             //app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();

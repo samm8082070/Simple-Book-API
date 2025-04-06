@@ -35,6 +35,9 @@
                     <a asp-action="UploadImage" asp-route-id="@book.Id" class="action-link">
                         <img src="~/images/icons/image-solid.svg" alt="UploadImage" />
                     </a>
+                    <a asp-controller="PdfViewer" asp-action="ViewPdf" asp-route-id="@book.Id" class="action-link">
+                        <img src="~/images/icons/book-solid.svg" alt="ViewPdf" />
+                    </a>
                 </div>
             </div>
         </div>

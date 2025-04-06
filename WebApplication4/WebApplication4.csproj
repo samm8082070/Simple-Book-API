@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\covers\" />
+    <Folder Include="wwwroot\pdfs\" />
   </ItemGroup>
 
 </Project>
