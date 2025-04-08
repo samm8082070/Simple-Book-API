@@ -13,6 +13,10 @@ namespace WebApplication4
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Configure App Configuration here
+            builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                               .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                               .AddEnvironmentVariables(); // Add this line to load environment variables
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddControllers();

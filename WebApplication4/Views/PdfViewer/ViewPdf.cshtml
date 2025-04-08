@@ -65,6 +65,22 @@
             display: flex; /* use flexbox to center the canvas */
             justify-content: center; /* center the canvas */
         }
+
+        .pdf-and-summary-container {
+            display: flex;
+        }
+
+        #summary-container {
+            width: 700px; /* Adjust width as needed */
+            height: auto;
+            padding: 15px;
+            border-left: 1px solid #3E3E40;
+        }
+
+        .usage-warning {
+            font-size: 0.8em;
+            color: orange;
+        }
     </style>
 </head>
 
@@ -328,6 +344,66 @@
             renderPage(pageNum, originalscale);
         }
     });
+
+        // 1. Get references to the necessary elements
+    const generateSummaryButton = document.getElementById('generateSummaryButton');
+    const summaryContentDiv = document.getElementById('summary-content');
+
+    // 2. Define the summarize function
+    function summarize() {
+        const api = `/api/PdfApi/GetSummary/${pdfId}`; // Your API endpoint
+
+        // 2.1. Disable the button to prevent multiple clicks
+        generateSummaryButton.disabled = true;
+        generateSummaryButton.textContent = "Summarizing..."; // Change button text
+
+        // 2.2. Show a loading animation (replace with your actual animation)
+        summaryContentDiv.innerHTML = '<div id="loading-animation-container" class="loadingio-spinner-rolling-nq4q5u6dq7r"><div class="ldio-x2uulkbinbj"><div></div></div></div>';
+
+        // 2.3. Make the API call using fetch (or your preferred AJAX method)
+        fetch(api, {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                // Try to get the error message from the response body
+                return response.text().then(errorMessage => {
+                    throw new Error(`HTTP error! Status: ${response.status}, Message: ${errorMessage}`);
+                }).catch(() => {
+                    // If getting the text fails (e.g., non-text response), still throw with status
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                });
+            }
+            return response.text(); // Or response.json() if your API returns JSON
+        })
+        .then(summary => {
+            // 2.4. Display the summary in the summaryContentDiv
+            summaryContentDiv.innerHTML = summary;
+            const loadingAnimation = document.getElementById('loading-animation-container');
+            if (loadingAnimation) {
+                loadingAnimation.remove(); // Modern way to remove the element
+            }
+        })
+        .catch(error => {
+            // 2.5. Handle errors gracefully
+            console.error("Error fetching summary:", error);
+            summaryContentDiv.innerHTML = '<p class="error-message">Failed to generate summary. Please try again.</p>';
+            setTimeout(() => {
+                const loadingAnimation = document.getElementById('loading-animation-container');
+                if (loadingAnimation) {
+                    loadingAnimation.remove();
+                }
+            }, 2000);
+        })
+        .finally(() => {
+            // 2.6. Re-enable the button and restore its text
+            generateSummaryButton.disabled = false;
+            generateSummaryButton.textContent = "Generate";
+        });
+    }
+
+    // 3. Attach the event listener to the button
+    generateSummaryButton.addEventListener('click', summarize);
 </script>
 
 
@@ -351,7 +427,19 @@
         <span>Page: <span id="page_num"></span> / <span id="page_count"></span></span>
     </div>
 
-    <div id="canvas-container">
-        <canvas id="the-canvas"></canvas>
+    
+    <div class="pdf-and-summary-container">
+        <div id="canvas-container">
+            <canvas id="the-canvas"></canvas>
+        </div>
+        <div id="summary-container">
+            <h3>AI-Powered Summary (Beta)</h3>
+			<p class="usage-warning">This feature uses a free AI service with usage limitations.</p>
+            <div class="pdf-controls">
+				<button id="generateSummaryButton" class="search-button">Generate</button>
+			</div>
+            <div id="summary-content">
+            </div>
+        </div>
     </div>
 </div>
