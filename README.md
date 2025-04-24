@@ -1,5 +1,5 @@
 ## The Bookshelf
-(این پروژه template نمی باشد (میتوانید commit ها را بررسی کنید)، با کمک هوش مصنوعی gemini پروژه نوشته شده و یادگیری انجام گرفته از صفر تا صد، و اینجانب محراب محمدخانی این پروژه را نوشتم ، با asp.net core و با ساختار mvc ،ساخته شده است)
+(این پروژه template نمی باشد (میتوانید commit ها را بررسی کنید)، با کمک هوش مصنوعی gemini پروژه نوشته شده و یادگیری انجام گرفته از صفر تا صد، با asp.net core و با ساختار mvc ،ساخته شده است)
 
 * Includes a custom pdf viewer using pdfjs
 * Import/export using csv files
